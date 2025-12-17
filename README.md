@@ -22,7 +22,7 @@ Follow the data preparation process from [VideoCutLER](datasets/README.md).
 </p>
 S2D has three main stages:  
 
-1) First, we predict single-frame masks using a SOTA unsupervised image instance segmentation model, CutS3D. 
+1) First, we predict single-frame masks using a SOTA unsupervised image instance segmentation model, CutS3D. Please find the weights [here](https://drive.google.com/drive/folders/1i2clWjOXeL5tQ1HhqBByhXnwcWkkED65?usp=share_link). 
 2) We then perform Keymask Discovery to identify temporally-coherent, high-quality keymasks across the video. 
 3) Finally, we perform Sparse-To-Dense Keymask Distillation to train a video instance segmentation model using the discovered keymasks. This is followed by another round of self-distillation.
 
@@ -33,13 +33,13 @@ We provide `demo_video/demo.py` that is able to demo builtin configs. Run it wit
 ```
 cd model_training
 python demo_video/demo.py \
-  --config-file configs/imagenet_video/ytvis2021_kd_video_mask2former_R50_cls_agnostic.yaml \
+  --config-file configs/imagenet_video/s2d_inference_kd_video_mask2former_R50_cls_agnostic.yaml \
   --input <your-video-path>/*.jpg \
   --confidence-threshold 0.8 \
   --output imgs/ \
   --opts MODEL.WEIGHTS s2d_zeroshot.pth
 ```
-Our zero-shot S2D model, trained on a mixture-of-datasets (SA-V, MOSE, VIPSeg) can be obtained from [here](https://leonsick.github.io/s2d). Then you should specify `MODEL.WEIGHTS` to the model checkpoint for evaluation.
+Our zero-shot S2D model, trained on a mixture-of-datasets (SA-V, MOSE, VIPSeg) can be obtained from [here](https://drive.google.com/drive/folders/1RavlAUlnehYAe4ymnSEFeL7i1lrh_c1n?usp=share_link). Then you should specify `MODEL.WEIGHTS` to the model checkpoint for evaluation.
 Above command will run the inference and show visualizations in an OpenCV window, and save the results in the mp4 format.
 For details of the command line arguments, see `demo.py -h` or look at its source code to understand its behavior. Some common arguments are:
 <!-- * To save outputs to a directory (for videos), use `--output`. -->
@@ -50,24 +50,22 @@ For details of the command line arguments, see `demo.py -h` or look at its sourc
 
 
 ### Unsupervised Zero-shot Evaluation
-To evaluate a model's performance on YouTubeVIS-2019 and YouTubeVIS-2021, please refer to [datasets/README.md](datasets/README.md) for instructions on preparing the datasets. Next, download the [model weights](https://drive.google.com/file/d/11TACB8tOaAc-eXBo_i2arR_7qgGSeXRg/view?usp=drive_link), specify the "model_weights", "config_file" and the path to "DETECTRON2_DATASETS", then run the following commands. 
+To evaluate a model's performance on various datasets, such as YouTubeVIS-2021, please refer to [datasets/README.md](datasets/README.md) for instructions on preparing the datasets. Next, download the [model weights](https://drive.google.com/file/d/11TACB8tOaAc-eXBo_i2arR_7qgGSeXRg/view?usp=drive_link), specify the "model_weights", "config_file" and the path to "DETECTRON2_DATASETS", then run the following commands. 
 ```
 export DETECTRON2_DATASETS=/PATH/TO/DETECTRON2_DATASETS/
-CUDA_VISIBLE_DEVICES=0,1,2,3 python train_net_video.py --num-gpus 4 \
-  --config-file configs/imagenet_video/videocutler_eval_ytvis2019.yaml \
-  --eval-only MODEL.WEIGHTS videocutler_m2f_rn50.pth \
-  OUTPUT_DIR OUTPUT-DIR/ytvis_2019
-
-python eval_ytvis.py --dataset-path ${DETECTRON2_DATASETS} --dataset-name 'ytvis_2019' --result-path 'OUTPUT-DIR/ytvis_2019/'
+CUDA_VISIBLE_DEVICES=0 python train_net_video.py --num-gpus 4 \
+  --config-file configs/imagenet_video/s2d_inference_kd_video_mask2former_R50_cls_agnostic.yaml \
+  --eval-only MODEL.WEIGHTS s2d_zeroshot.pth \
+  OUTPUT_DIR OUTPUT-DIR/ytvis_2021 DATASETS.TEST '("ytvis_2021_val",)'
 ```
 
 ### Instructions for Keymask Discovery and Model Training
 We will provide detailed instructions soon.
 ToDos:
-[ ] Provide installation instructions
-[ ] Write instructions for Single-Frame Mask Prediction with CutS3D
-[ ] Write instructions for Keymask Discovery
-[ ] Write instructions for Sparse-To-Dense Keymask Distillation
+- [ ] Provide installation instructions
+- [ ] Write instructions for Single-Frame Mask Prediction with CutS3D
+- [ ] Write instructions for Keymask Discovery
+- [ ] Write instructions for Sparse-To-Dense Keymask Distillation
 
 
 
