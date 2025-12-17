@@ -1,6 +1,6 @@
 # S2D: Sparse-To-Dense Keymask Distillation For Unsupervised Video Instance Segmentation
 
-S2D is a simple unsupervised video instance segmentation (UVIS) method. ***Our approach is trained exclusively on video data without using any human annotations, avoid synthetic videos (ImageNet data) entire.***    
+S2D is a simple unsupervised video instance segmentation (UVIS) method. ***Our approach is trained exclusively on video data without using any human annotations, avoiding synthetic videos (ImageNet data) entirely.***    
 
 
 > [**S2D: Sparse-To-Dense Keymask Distillation For Unsupervised Video Instance Segmentation**](https://leonsick.github.io/s2d/)            
